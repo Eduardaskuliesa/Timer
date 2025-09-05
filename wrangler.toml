@@ -1,0 +1,17 @@
+name = "proud-bar-0da8"
+main = ".open-next/worker.js"
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+upload_source_maps = true
+
+[assets]
+binding = "ASSETS"
+directory = ".open-next/assets"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "timer-db"
+database_id = "97a84183-ddfe-4fa3-813f-acf908531cb3"
