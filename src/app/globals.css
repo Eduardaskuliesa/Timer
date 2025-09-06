@@ -120,3 +120,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+@theme {
+  --font-family-times: "Times New Roman", "Times", serif;
+}
