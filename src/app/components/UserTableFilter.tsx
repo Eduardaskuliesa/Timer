@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface UserFilterProps {
   onFilterChange: (filter: string) => void;
@@ -7,12 +7,17 @@ interface UserFilterProps {
 const UserFilter = ({ onFilterChange }: UserFilterProps) => {
   const [filter, setFilter] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setFilter(value);
-    onFilterChange(value);
-  };
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      onFilterChange(filter);
+    }, 300);
 
+    return () => clearTimeout(timeoutId);
+  }, [filter, onFilterChange]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(e.target.value as string);
+  };
   return (
     <div className="mb-4">
       <input

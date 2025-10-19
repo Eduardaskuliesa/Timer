@@ -30,47 +30,66 @@ export type User = {
 
 const UserDashboard = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [isUserFetching, setIsUserFetching] = useState(true);
-  const [filteredUsers, setFilteredUsers] = useState(users);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [filteredUser, setFilteredUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchData = async () => {
       const response = await fetch(
         "https://jsonplaceholder.typicode.com/users"
       );
+      if (!response.ok) {
+        setError("Failed to load users");
+        setIsLoading(false);
+      }
 
       const data = (await response.json()) as User[];
-
       setUsers(data);
       setFilteredUsers(data);
-      setIsUserFetching(false);
     };
-    fetchUser();
+    fetchData();
+    setIsLoading(false);
   }, []);
 
-  const handleFilterChange = (filter: string) => {
-    const filtered = users.filter(
+  const handleFiltering = (filter: string) => {
+    const filteredUsers = users.filter(
       (user) =>
-        user.name.toLowerCase().includes(filter.toLowerCase()) ||
-        user.email.toLowerCase().includes(filter.toLowerCase()) ||
-        user.company.name.toLowerCase().includes(filter.toLowerCase())
+        user.name.toLocaleLowerCase().includes(filter) ||
+        user.email.toLocaleLowerCase().includes(filter) ||
+        user.company.name.toLocaleLowerCase().includes(filter)
     );
-    setFilteredUsers(filtered);
+
+    setFilteredUsers(filteredUsers);
   };
+
+  useEffect(() => {
+    console.log(selectedUserId);
+  }, [selectedUserId]);
+
+  if (users.length === 0 && !isLoading) {
+    return <div>No users found...</div>;
+  }
+
+  if (error && !isLoading) {
+    return <div>Failed to load users</div>;
+  }
 
   return (
     <div>
-      <UserFilter onFilterChange={handleFilterChange} />
-      {isUserFetching ? (
-        <div>...Loading</div>
+      <div className="mb-4">
+        <UserFilter onFilterChange={handleFiltering}></UserFilter>
+      </div>
+      {isLoading ? (
+        <div>loading...</div>
       ) : (
         <>
-          <UserTable users={filteredUsers} onUserClick={setSelectedUserId} />
+          <UserTable users={filteredUser} onUserClick={setSelectedUserId} />
           <UserModal
             userId={selectedUserId}
             onClose={() => setSelectedUserId(null)}
-          />
+          ></UserModal>
         </>
       )}
     </div>

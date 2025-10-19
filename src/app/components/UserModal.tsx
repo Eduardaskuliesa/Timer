@@ -8,8 +8,20 @@ interface UserModalProps {
 }
 
 const UserModal = ({ userId, onClose }: UserModalProps) => {
-  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    if (userId) {
+      document.addEventListener("keydown", handleEscape);
+    }
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [onClose, userId]);
 
   useEffect(() => {
     if (!userId) return;
@@ -19,7 +31,11 @@ const UserModal = ({ userId, onClose }: UserModalProps) => {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/users/${userId}`
       );
+      if (!response.ok) {
+        alert("Failed to fetch user");
+      }
       const data = (await response.json()) as User;
+
       setUser(data);
       setIsLoading(false);
     };
@@ -31,7 +47,7 @@ const UserModal = ({ userId, onClose }: UserModalProps) => {
 
   return createPortal(
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       onClick={onClose}
     >
       <div

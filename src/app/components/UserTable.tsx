@@ -3,31 +3,31 @@ import { User } from "./UserDashboard";
 
 interface UserTableProps {
   users: User[];
-  onUserClick: (userId: number) => void;
+  onUserClick: (userId: number | null) => void;
 }
 
 const UserTable = ({ users, onUserClick }: UserTableProps) => {
   return (
-    <table className="w-full border-collapse border border-gray-300">
-      <thead className="bg-blue-500 text-white">
-        <tr>
-          <th className="text-left p-3 border border-gray-300">Name</th>
-          <th className="text-left p-3 border border-gray-300">Email</th>
-          <th className="text-left p-3 border border-gray-300">Company</th>
+    <table>
+      <thead>
+        <tr className="bg-blue-500 ">
+          <th className="p-2 text-start text-gray-50">Name</th>
+          <th className="p-2 text-start text-gray-50">Email</th>
+          <th className="p-2 text-start text-gray-50">Company</th>
         </tr>
       </thead>
       <tbody>
         {users.map((user, index) => (
           <tr
-            key={user.id}
             onClick={() => onUserClick(user.id)}
-            className={`border border-gray-300 cursor-pointer ${
+            className={`${
               index % 2 === 0 ? "bg-white" : "bg-gray-100"
-            } hover:bg-blue-100`}
+            } border hover:bg-blue-100 transition-colors cursor-pointer`}
+            key={user.id}
           >
-            <td className="p-3 border border-gray-300">{user.name}</td>
-            <td className="p-3 border border-gray-300">{user.email}</td>
-            <td className="p-3 border border-gray-300">{user.company.name}</td>
+            <td className="p-2 ">{user.name}</td>
+            <td className="p-2">{user.email}</td>
+            <td className="p-2">{user.company.name}</td>
           </tr>
         ))}
       </tbody>
